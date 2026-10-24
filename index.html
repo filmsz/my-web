@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚙️ ตั้งค่าโปรเจกต์ ⚙️</title>
+<style>
+  :root {
+    --bg-main: #111418;
+    --bg-grad: #161A1D;
+    --card: #1F2327;
+    --field: #161A1D;
+    --field-hover: #1b2024;
+    --ink: #EDEDED;
+    --muted: #A0A8B0;
+    --accent-gold: #C2A675;
+    --accent-gold-hover: #d1b88a;
+    --accent-sage: #8F9E8B;
+    --line: #2C3238;
+    --err: #E07A68;
+    color-scheme: dark;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: "Sarabun", "Noto Sans Thai", "Prompt", system-ui, -apple-system, sans-serif;
+    background: radial-gradient(circle at top, var(--bg-grad) 0%, var(--bg-main) 100%);
+    color: var(--ink);
+    padding: 16px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.5;
+  }
+  .ss-card {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--accent-gold);
+    border-radius: 16px;
+    padding: 22px 24px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  }
+  .ss-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .ss-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-gold);
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ss-meta {
+    font-size: 13.5px;
+    color: var(--accent-sage);
+    background: rgba(143, 158, 139, 0.12);
+    border: 1px solid rgba(143, 158, 139, 0.3);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .ss-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .ss-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  label {
+    display: block;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  select {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--field);
+    color: var(--ink);
+    font: inherit;
+    font-size: 15px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  select:hover {
+    background: var(--field-hover);
+    border-color: #3d454d;
+  }
+  select:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 3px rgba(194, 166, 117, 0.18);
+  }
+  .ss-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .ss-status {
+    font-size: 14px;
+    color: var(--accent-sage);
+    flex: 1;
+    min-width: 200px;
+  }
+  .ss-status.err {
+    color: var(--err);
+    font-weight: 500;
+  }
+  .ss-btn {
+    height: 44px;
+    padding: 0 24px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--accent-gold);
+    color: #111418;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 4px 14px rgba(194, 166, 117, 0.25);
+  }
+  .ss-btn:hover {
+    background: var(--accent-gold-hover);
+  }
+  .ss-btn:active {
+    transform: translateY(1px);
+  }
+  .ss-btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+  .ss-fallback {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+    display: none;
+  }
+  .ss-fallback.show {
+    display: flex;
+    gap: 8px;
+  }
+  .ss-fallback input {
+    flex: 1;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--field);
+    color: var(--ink);
+    font-size: 13.5px;
+    outline: none;
+  }
+  .ss-copy {
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--accent-gold);
+    border-radius: 8px;
+    background: rgba(194, 166, 117, 0.12);
+    color: var(--accent-gold);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+  }
+  .ss-copy:hover {
+    background: rgba(194, 166, 117, 0.24);
+  }
+  @media (max-width: 560px) {
+    body {
+      padding: 10px;
+    }
+    .ss-card {
+      padding: 18px 16px;
+    }
+    .ss-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .ss-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .ss-btn {
+      width: 100%;
+    }
+    .ss-fallback.show {
+      flex-direction: column;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="ss-card" id="ss-root">
+  <div class="ss-top">
+    <span class="ss-title">⚙️ ตั้งค่าโปรเจกต์ ⚙️</span>
+    <span class="ss-meta" id="ss-est">📝 ≈ 760 ตัวอักษร · 🖼️ 24 ภาพ · 🎬 5 ฉาก</span>
+  </div>
+  <div class="ss-grid">
+    <div class="ss-field">
+      <label for="ss-cat">1. หมวดเรื่อง</label>
+      <select id="ss-cat">
+        <option value="" selected disabled>-- เลือกหมวดเรื่อง --</option>
+        <option value="เกร็ดประวัติศาสตร์">🏛️ เกร็ดประวัติศาสตร์</option>
+        <option value="จิตวิทยาและความสัมพันธ์">🧠 จิตวิทยาและความสัมพันธ์</option>
+        <option value="เรื่องหลอนและคดีลี้ลับ">👻 เรื่องหลอนและคดีลี้ลับ</option>
+        <option value="ทริกประหยัดเงิน">💰 ทริกประหยัดเงิน</option>
+        <option value="พฤติกรรมสัตว์เลี้ยง">🐾 พฤติกรรมสัตว์เลี้ยง</option>
+        <option value="ไลฟ์แฮกชีวิตประจำวัน">💡 ไลฟ์แฮกชีวิตประจำวัน</option>
+        <option value="สูตรอาหาร 5 นาที">🍳 สูตรอาหาร 5 นาที</option>
+        <option value="เรื่องจริงที่คุณเข้าใจผิด">🔍 เรื่องจริงที่คุณเข้าใจผิด</option>
+        <option value="ทริกไอทีและทางลัดมือถือ">📱 ทริกไอทีและทางลัดมือถือ</option>
+        <option value="ละครสั้นตลก POV">🎭 ละครสั้นตลก POV</option>
+        <option value="เบื้องหลังอาชีพ">💼 เบื้องหลังอาชีพ</option>
+        <option value="วิธีเอาตัวรอดปลอดภัย">🛡️ วิธีเอาตัวรอดปลอดภัย</option>
+        <option value="แต่งตัวปรับลุค">✨ แต่งตัวปรับลุค</option>
+        <option value="แก้ออฟฟิศซินโดรม">🪑 แก้ออฟฟิศซินโดรม</option>
+        <option value="กฎหมายใกล้ตัว">⚖️ กฎหมายใกล้ตัว</option>
+        <option value="ทริกเที่ยวและพิกัดลับ">🗺️ ทริกเที่ยวและพิกัดลับ</option>
+        <option value="ข้อคิดและแรงบันดาลใจ">🌱 ข้อคิดและแรงบันดาลใจ</option>
+      </select>
+    </div>
+    <div class="ss-field">
+      <label for="ss-style">2. สไตล์การเล่า (เปลี่ยนได้)</label>
+      <select id="ss-style">
+        <option value="" selected disabled>-- เลือกสไตล์การเล่า --</option>
+        <option value="เพื่อนสนิทเมาท์มอย">💬 เพื่อนสนิทเมาท์มอย</option>
+        <option value="ตลกร้าย / หน้านิ่ง">😐 ตลกร้าย / หน้านิ่ง</option>
+        <option value="ผู้เชี่ยวชาญเล่าง่าย">🎓 ผู้เชี่ยวชาญเล่าง่าย</option>
+        <option value="นักข่าวเล่าเร็ว">⚡ นักข่าวเล่าเร็ว</option>
+        <option value="ครูพี่เลี้ยง / ชี้แนะ">🧭 ครูพี่เลี้ยง / ชี้แนะ</option>
+        <option value="ลึกลับ / ชวนสงสัย">🕯️ ลึกลับ / ชวนสงสัย</option>
+        <option value="ดราม่า / ขยี้อารมณ์">🔥 ดราม่า / ขยี้อารมณ์</option>
+        <option value="ฮีลใจ / ปลอบประโลม">🍵 ฮีลใจ / ปลอบประโลม</option>
+        <option value="คนในวงการแฉ">🤫 คนในวงการแฉ</option>
+        <option value="ผู้ประสบภัย / เจอกับตัว">🚨 ผู้ประสบภัย / เจอกับตัว</option>
+      </select>
+    </div>
+    <div class="ss-field">
+      <label for="ss-size">3. ขนาดคลิป</label>
+      <select id="ss-size">
+        <option value="9:16" selected>📱 9:16 (แนวตั้ง Shorts/Reels/TikTok)</option>
+        <option value="16:9">🖥️ 16:9 (แนวนอน YouTube)</option>
+        <option value="1:1">⏹️ 1:1 (จัตุรัส)</option>
+        <option value="4:5">🖼️ 4:5 (แนวตั้งโซเชียล)</option>
+        <option value="3:4">🎴 3:4 (แนวตั้งมาตรฐาน)</option>
+      </select>
+    </div>
+    <div class="ss-field">
+      <label for="ss-ep">4. จำนวนตอน</label>
+      <select id="ss-ep">
+        <option value="1" selected>1 EP</option>
+        <option value="2">2 EP</option>
+        <option value="3">3 EP</option>
+        <option value="4">4 EP</option>
+        <option value="5">5 EP</option>
+      </select>
+    </div>
+    <div class="ss-field">
+      <label for="ss-min">5. ความยาว</label>
+      <select id="ss-min">
+        <option value="1" selected>1 นาที</option>
+        <option value="2">2 นาที</option>
+        <option value="3">3 นาที</option>
+        <option value="4">4 นาที</option>
+        <option value="5">5 นาที</option>
+        <option value="6">6 นาที</option>
+        <option value="7">7 นาที</option>
+        <option value="8">8 นาที</option>
+        <option value="9">9 นาที</option>
+        <option value="10">10 นาที</option>
+        <option value="11">11 นาที</option>
+        <option value="12">12 นาที</option>
+        <option value="13">13 นาที</option>
+        <option value="14">14 นาที</option>
+        <option value="15">15 นาที</option>
+      </select>
+    </div>
+    <div class="ss-field">
+      <label for="ss-vid">6. จำนวนวิดีโอ</label>
+      <select id="ss-vid">
+        <option value="1">1 ฉาก</option>
+        <option value="2">2 ฉาก</option>
+        <option value="3">3 ฉาก</option>
+        <option value="4">4 ฉาก</option>
+        <option value="5" selected>5 ฉาก</option>
+        <option value="6">6 ฉาก</option>
+        <option value="7">7 ฉาก</option>
+        <option value="8">8 ฉาก</option>
+        <option value="9">9 ฉาก</option>
+        <option value="10">10 ฉาก</option>
+        <option value="11">11 ฉาก</option>
+        <option value="12">12 ฉาก</option>
+        <option value="13">13 ฉาก</option>
+        <option value="14">14 ฉาก</option>
+        <option value="15">15 ฉาก</option>
+        <option value="16">16 ฉาก</option>
+        <option value="17">17 ฉาก</option>
+        <option value="18">18 ฉาก</option>
+        <option value="19">19 ฉาก</option>
+        <option value="20">20 ฉาก</option>
+        <option value="21">21 ฉาก</option>
+        <option value="22">22 ฉาก</option>
+        <option value="23">23 ฉาก</option>
+        <option value="24">24 ฉาก</option>
+        <option value="ทั้งหมด">ทั้งหมด (24 ฉาก)</option>
+      </select>
+    </div>
+  </div>
+  <div class="ss-bar">
+    <span class="ss-status" id="ss-status">✨ เลือกหมวดเรื่องเพื่อรับคำแนะนำสไตล์อัตโนมัติ</span>
+    <button type="button" class="ss-btn" id="ss-send">🚀 ส่งข้อมูล</button>
+  </div>
+  <div class="ss-fallback" id="ss-fb">
+    <input type="text" id="ss-out" readonly>
+    <button type="button" class="ss-copy" id="ss-copy">📋 คัดลอก</button>
+  </div>
+</div>
+<script>
+(() => {
+  const recMap = {
+    "เกร็ดประวัติศาสตร์": "เพื่อนสนิทเมาท์มอย",
+    "จิตวิทยาและความสัมพันธ์": "ฮีลใจ / ปลอบประโลม",
+    "เรื่องหลอนและคดีลี้ลับ": "ลึกลับ / ชวนสงสัย",
+    "ทริกประหยัดเงิน": "ครูพี่เลี้ยง / ชี้แนะ",
+    "พฤติกรรมสัตว์เลี้ยง": "เพื่อนสนิทเมาท์มอย",
+    "ไลฟ์แฮกชีวิตประจำวัน": "ผู้เชี่ยวชาญเล่าง่าย",
+    "สูตรอาหาร 5 นาที": "เพื่อนสนิทเมาท์มอย",
+    "เรื่องจริงที่คุณเข้าใจผิด": "นักข่าวเล่าเร็ว",
+    "ทริกไอทีและทางลัดมือถือ": "ผู้เชี่ยวชาญเล่าง่าย",
+    "ละครสั้นตลก POV": "ตลกร้าย / หน้านิ่ง",
+    "เบื้องหลังอาชีพ": "คนในวงการแฉ",
+    "วิธีเอาตัวรอดปลอดภัย": "ผู้ประสบภัย / เจอกับตัว",
+    "แต่งตัวปรับลุค": "ครูพี่เลี้ยง / ชี้แนะ",
+    "แก้ออฟฟิศซินโดรม": "ผู้เชี่ยวชาญเล่าง่าย",
+    "กฎหมายใกล้ตัว": "ดราม่า / ขยี้อารมณ์",
+    "ทริกเที่ยวและพิกัดลับ": "เพื่อนสนิทเมาท์มอย",
+    "ข้อคิดและแรงบันดาลใจ": "ฮีลใจ / ปลอบประโลม"
+  };
+
+  const cat = document.getElementById('ss-cat');
+  const style = document.getElementById('ss-style');
+  const size = document.getElementById('ss-size');
+  const ep = document.getElementById('ss-ep');
+  const min = document.getElementById('ss-min');
+  const vid = document.getElementById('ss-vid');
+  const est = document.getElementById('ss-est');
+  const status = document.getElementById('ss-status');
+  const send = document.getElementById('ss-send');
+  const fb = document.getElementById('ss-fb');
+  const out = document.getElementById('ss-out');
+  const copy = document.getElementById('ss-copy');
+
+  function updateEstDisplay() {
+    const m = Number(min.value);
+    const totalImages = m * 24;
+    const vidText = vid.value === 'ทั้งหมด' ? `${totalImages} ฉาก (ทั้งหมด)` : `${vid.value} ฉาก`;
+    est.textContent = `📝 ≈ ${(m * 760).toLocaleString('en-US')} ตัวอักษร · 🖼️ ${totalImages} ภาพ · 🎬 ${vidText}`;
+  }
+
+  function rebuildVideoOptions() {
+    const m = Number(min.value);
+    const totalImages = m * 24;
+    const prevValue = vid.value;
+    vid.innerHTML = '';
+
+    for (let i = 1; i <= totalImages; i++) {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = `${i} ฉาก`;
+      vid.appendChild(opt);
+    }
+
+    const allOpt = document.createElement('option');
+    allOpt.value = 'ทั้งหมด';
+    allOpt.textContent = `ทั้งหมด (${totalImages} ฉาก)`;
+    vid.appendChild(allOpt);
+
+    if (prevValue === 'ทั้งหมด') {
+      vid.value = 'ทั้งหมด';
+    } else if (Number(prevValue) >= 1 && Number(prevValue) <= totalImages) {
+      vid.value = prevValue;
+    } else {
+      vid.value = '5';
+    }
+    updateEstDisplay();
+  }
+
+  cat.addEventListener('change', () => {
+    const recommended = recMap[cat.value];
+    if (recommended) {
+      style.value = recommended;
+      status.classList.remove('err');
+      status.textContent = '✨ แนะนำสไตล์: ' + recommended + ' (เปลี่ยนได้)';
+    }
+  });
+
+  min.addEventListener('change', rebuildVideoOptions);
+  vid.addEventListener('change', updateEstDisplay);
+
+  send.addEventListener('click', async () => {
+    if (!cat.value || !style.value) {
+      status.classList.add('err');
+      status.textContent = '⚠️ กรุณาเลือกหมวดเรื่องและสไตล์การเล่าก่อนส่งข้อมูล';
+      return;
+    }
+    status.classList.remove('err');
+    const totalImages = Number(min.value) * 24;
+    const vidValue = vid.value === 'ทั้งหมด' ? `ทั้งหมด (${totalImages})` : vid.value;
+    const text = `[STEP1] หมวด: ${cat.value} | สไตล์: ${style.value} | ขนาด: ${size.value} | EP: ${ep.value} | นาที/EP: ${min.value} | จำนวนวิดีโอ: ${vidValue}`;
+    out.value = text;
+    fb.classList.add('show');
+
+    const bridge = window.openai;
+    if (typeof bridge?.sendFollowUpMessage === 'function') {
+      send.disabled = true;
+      status.textContent = '⏳ กำลังส่งข้อมูลไปประมวลผล...';
+      try {
+        await bridge.sendFollowUpMessage({ prompt: text });
+        status.textContent = '✅ ส่งข้อมูลแล้ว';
+        return;
+      } catch (e) {
+        send.disabled = false;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      status.textContent = '✅ คัดลอกคำสั่งแล้ว วางส่งในแชตได้เลย';
+    } catch (e) {
+      status.textContent = '👇 กดปุ่มคัดลอกด้านล่างเพื่อส่งในแชต';
+    }
+  });
+
+  copy.addEventListener('click', async () => {
+    out.select();
+    try {
+      await navigator.clipboard.writeText(out.value);
+      status.textContent = '✅ คัดลอกแล้ว วางในแชตได้เลย';
+    } catch (e) {
+      document.execCommand('copy');
+      status.textContent = '✅ คัดลอกแล้ว';
+    }
+  });
+})();
+</script>
+</body>
+</html>
