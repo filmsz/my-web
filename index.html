@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>⚙️ ตั้งค่าโปรเจกต์ ⚙️</title>
+<link rel="icon" type="image/png" sizes="64x64" href="logo.png">
 <style>
   :root {
     --bg-main: #111418;
@@ -46,6 +47,13 @@
     border-radius: 16px;
     padding: 22px 24px;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  }
+  .ss-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle;
   }
   .ss-top {
     display: flex;
@@ -225,7 +233,10 @@
 <body>
 <div class="ss-card" id="ss-root">
   <div class="ss-top">
-    <span class="ss-title">⚙️ ตั้งค่าโปรเจกต์ ⚙️</span>
+    <span class="ss-title">
+      <img src="logo.png" alt="FilmsZ Studio Logo" class="ss-logo">
+      ⚙️ ตั้งค่าโปรเจกต์ ⚙️
+    </span>
     <span class="ss-meta" id="ss-est">📝 ≈ 760 ตัวอักษร · 🖼️ 24 ภาพ · 🎬 5 ฉาก</span>
   </div>
   <div class="ss-grid">
