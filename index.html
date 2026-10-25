@@ -346,7 +346,7 @@
         <option value="22">22 ฉาก</option>
         <option value="23">23 ฉาก</option>
         <option value="24">24 ฉาก</option>
-        <option value="ทั้งหมด">ทั้งหมด (24 ฉาก)</option>
+        <option value="ทั้งหมด (ตาม Timestamp)">ทั้งหมด (ตาม Timestamp)</option>
       </select>
     </div>
   </div>
@@ -397,7 +397,10 @@
   function updateEstDisplay() {
     const m = Number(min.value);
     const totalImages = m * 24;
-    const vidText = vid.value === 'ทั้งหมด' ? `${totalImages} ฉาก (ทั้งหมด)` : `${vid.value} ฉาก`;
+    let vidText = `${vid.value} ฉาก`;
+    if (vid.value === 'ทั้งหมด (ตาม Timestamp)') {
+      vidText = `ทั้งหมด (ตาม Timestamp)`;
+    }
     est.textContent = `📝 ≈ ${(m * 760).toLocaleString('en-US')} ตัวอักษร · 🖼️ ${totalImages} ภาพ · 🎬 ${vidText}`;
   }
 
@@ -414,13 +417,13 @@
       vid.appendChild(opt);
     }
 
-    const allOpt = document.createElement('option');
-    allOpt.value = 'ทั้งหมด';
-    allOpt.textContent = `ทั้งหมด (${totalImages} ฉาก)`;
-    vid.appendChild(allOpt);
+    const tsOpt = document.createElement('option');
+    tsOpt.value = 'ทั้งหมด (ตาม Timestamp)';
+    tsOpt.textContent = 'ทั้งหมด (ตาม Timestamp)';
+    vid.appendChild(tsOpt);
 
-    if (prevValue === 'ทั้งหมด') {
-      vid.value = 'ทั้งหมด';
+    if (prevValue === 'ทั้งหมด (ตาม Timestamp)') {
+      vid.value = 'ทั้งหมด (ตาม Timestamp)';
     } else if (Number(prevValue) >= 1 && Number(prevValue) <= totalImages) {
       vid.value = prevValue;
     } else {
@@ -448,8 +451,10 @@
       return;
     }
     status.classList.remove('err');
-    const totalImages = Number(min.value) * 24;
-    const vidValue = vid.value === 'ทั้งหมด' ? `ทั้งหมด (${totalImages})` : vid.value;
+    let vidValue = vid.value;
+    if (vid.value === 'ทั้งหมด (ตาม Timestamp)') {
+      vidValue = 'ทั้งหมด (ตาม Timestamp)';
+    }
     const text = `[STEP1] หมวด: ${cat.value} | สไตล์: ${style.value} | ขนาด: ${size.value} | EP: ${ep.value} | นาที/EP: ${min.value} | จำนวนวิดีโอ: ${vidValue}`;
     out.value = text;
     fb.classList.add('show');
