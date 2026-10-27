@@ -124,6 +124,20 @@
     border-color: var(--accent-gold);
     box-shadow: 0 0 0 3px rgba(194, 166, 117, 0.18);
   }
+  .ss-time-picker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .ss-time-picker select {
+    flex: 1;
+    text-align: center;
+  }
+  .ss-time-picker span {
+    font-weight: 700;
+    color: var(--muted);
+    font-size: 18px;
+  }
   .ss-bar {
     display: flex;
     align-items: center;
@@ -292,14 +306,37 @@
       </select>
     </div>
     <div class="ss-field">
-      <label for="ss-min">5. ความยาว</label>
-      <select id="ss-min">
-        <option value="1.5" selected>1:30 นาที</option>
-        <option value="2.5">2:30 นาที</option>
-        <option value="3.5">3:30 นาที</option>
-        <option value="4.5">4:30 นาที</option>
-        <option value="5.5">5:30 นาที</option>
-      </select>
+      <label>5. ความยาว</label>
+      <div class="ss-time-picker">
+        <select id="ss-min">
+          <option value="00">00</option>
+          <option value="01" selected>01</option>
+          <option value="02">02</option>
+          <option value="03">03</option>
+          <option value="04">04</option>
+          <option value="05">05</option>
+          <option value="06">06</option>
+          <option value="07">07</option>
+          <option value="08">08</option>
+          <option value="09">09</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+        </select>
+        <span>:</span>
+        <select id="ss-sec">
+          <option value="00" selected>00</option>
+          <option value="30">30</option>
+        </select>
+      </div>
     </div>
     <div class="ss-field">
       <label for="ss-vid">6. จำนวนวิดีโอ</label>
@@ -319,6 +356,26 @@
 </div>
 <script>
 (() => {
+  // แยกอิโมจิออกมาเพื่อให้ value ส่งค่าไปแค่ข้อความ
+  const styleEmojis = {
+    "ดราม่าสะเทือนอารมณ์": "😭",
+    "แฉ/เตือนภัย": "⚠️",
+    "ตลกร้าย/จิกกัด": "😏",
+    "เรียบง่าย/เล่าประสบการณ์": "☕",
+    "อบอุ่น/ฮีลใจ": "🫂",
+    "ปรัชญา/สโตอิก": "🧘",
+    "ให้กำลังใจ/ฮึกเหิม": "🔥",
+    "เล่าแบบเพื่อนคุยกัน": "💬",
+    "ลึกลับ/น่าเกรงขาม": "🌑",
+    "เล่านิทาน/แฟนตาซี": "🧚",
+    "สยองขวัญ/ระทึกขวัญ": "😱",
+    "สารคดี/กึ่งประวัติศาสตร์": "📜",
+    "สืบสวน/ระทึกขวัญ": "🕵️",
+    "สารคดี/เจาะลึก": "📁",
+    "ดาร์ก/หักมุม": "🔪",
+    "ตื่นเต้น/เล่าข่าว": "🚨"
+  };
+
   const styleMap = {
     "ความรัก & ความสัมพันธ์ซับซ้อน": ["ดราม่าสะเทือนอารมณ์", "แฉ/เตือนภัย", "ตลกร้าย/จิกกัด", "เรียบง่าย/เล่าประสบการณ์"],
     "ฮีลใจ & กำลังใจการใช้ชีวิต": ["อบอุ่น/ฮีลใจ", "ปรัชญา/สโตอิก", "ให้กำลังใจ/ฮึกเหิม", "เล่าแบบเพื่อนคุยกัน"],
@@ -338,6 +395,7 @@
   const size = document.getElementById('ss-size');
   const ep = document.getElementById('ss-ep');
   const min = document.getElementById('ss-min');
+  const sec = document.getElementById('ss-sec');
   const vid = document.getElementById('ss-vid');
   const est = document.getElementById('ss-est');
   const status = document.getElementById('ss-status');
@@ -346,8 +404,10 @@
   const out = document.getElementById('ss-out');
   const copy = document.getElementById('ss-copy');
 
+  let initialSetup = true;
+
   function updateEstDisplay() {
-    const m = Number(min.value);
+    const m = Number(min.value) + (Number(sec.value) / 60);
     const totalImages = Math.round(m * 24);
     let vidText = `${vid.value} ฉาก`;
     if (vid.value === 'ทั้งหมดทุกฉาก') {
@@ -363,8 +423,8 @@
     if (styleMap[catValue]) {
       styleMap[catValue].forEach(s => {
         const opt = document.createElement('option');
-        opt.value = s;
-        opt.textContent = `🎭 ${s}`;
+        opt.value = s; // เก็บค่าส่งข้อมูลแบบไม่มีอิโมจิ
+        opt.textContent = `${styleEmojis[s]} ${s}`; // แสดงผลมีอิโมจิ
         style.appendChild(opt);
       });
     } else {
@@ -378,12 +438,14 @@
   }
 
   function rebuildVideoOptions() {
-    const m = Number(min.value);
+    const m = Number(min.value) + (Number(sec.value) / 60);
     const totalImages = Math.round(m * 24);
     const prevValue = vid.value;
     vid.innerHTML = '';
 
-    for (let i = 1; i <= totalImages; i++) {
+    const maxScenes = totalImages > 0 ? totalImages : 1; 
+
+    for (let i = 1; i <= maxScenes; i++) {
       const opt = document.createElement('option');
       opt.value = String(i);
       opt.textContent = `${i} ฉาก`;
@@ -395,12 +457,15 @@
     tsOpt.textContent = 'ทั้งหมดทุกฉาก';
     vid.appendChild(tsOpt);
 
-    if (prevValue === 'ทั้งหมดทุกฉาก') {
+    if (initialSetup) {
+      vid.value = (maxScenes >= 5) ? '5' : 'ทั้งหมดทุกฉาก';
+      initialSetup = false;
+    } else if (prevValue === 'ทั้งหมดทุกฉาก') {
       vid.value = 'ทั้งหมดทุกฉาก';
-    } else if (Number(prevValue) >= 1 && Number(prevValue) <= totalImages) {
+    } else if (Number(prevValue) >= 1 && Number(prevValue) <= maxScenes) {
       vid.value = prevValue;
     } else {
-      vid.value = 'ทั้งหมดทุกฉาก'; // Default to "ทั้งหมดทุกฉาก"
+      vid.value = (maxScenes >= 5) ? '5' : 'ทั้งหมดทุกฉาก';
     }
     updateEstDisplay();
   }
@@ -411,11 +476,12 @@
     if (recommended) {
       style.value = recommended;
       status.classList.remove('err');
-      status.textContent = '✨ แนะนำสไตล์: ' + recommended + ' (เปลี่ยนได้)';
+      status.textContent = `✨ แนะนำสไตล์: ${styleEmojis[recommended]} ${recommended} (เปลี่ยนได้)`;
     }
   });
 
   min.addEventListener('change', rebuildVideoOptions);
+  sec.addEventListener('change', rebuildVideoOptions);
   vid.addEventListener('change', updateEstDisplay);
 
   send.addEventListener('click', async () => {
@@ -426,14 +492,15 @@
     }
     status.classList.remove('err');
     
-    let durationText = "";
-    if(min.value === "1.5") durationText = "1:30";
-    else if(min.value === "2.5") durationText = "2:30";
-    else if(min.value === "3.5") durationText = "3:30";
-    else if(min.value === "4.5") durationText = "4:30";
-    else if(min.value === "5.5") durationText = "5:30";
+    const durationText = `${min.value}:${sec.value}`;
+    
+    // จัดการข้อความของจำนวนวิดีโอตอนส่งข้อมูล
+    let finalVidText = vid.value;
+    if (finalVidText !== 'ทั้งหมดทุกฉาก') {
+      finalVidText += ' ฉาก';
+    }
 
-    const text = `[STEP1] หมวด: ${cat.value} | สไตล์: ${style.value} | ขนาด: ${size.value} | EP: ${ep.value} | นาที/EP: ${durationText} นาที | จำนวนวิดีโอ: ${vid.value}`;
+    const text = `[STEP1] หมวด: ${cat.value} | สไตล์: ${style.value} | ขนาด: ${size.value} | EP: ${ep.value} | นาที/EP: ${durationText} นาที | จำนวนวิดีโอ: ${finalVidText}`;
     out.value = text;
     fb.classList.add('show');
 
